@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📐 Completing the Square - رياضيات 12 عام | Mr. Mohammed Hesham</title>
+<meta name="description" content="امتحان تفاعلي عن إكمال المربع في حالة ثلاثي حدود ليس مربعاً كاملاً - صف 12 عام">
+<meta name="author" content="Mr. Mohammed Hesham">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body { font-family: 'Cairo', sans-serif; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); }
+body.en-mode { font-family: 'Inter', sans-serif; direction: ltr; }
+.arabic-math { font-family: 'Amiri', 'Cairo', serif; }
+.correct { background-color: #dcfce7 !important; border-color: #16a34a !important; }
+.incorrect { background-color: #fee2e2 !important; border-color: #dc2626 !important; }
+.timer-warning { color: #dc2626 !important; animation: pulse 1s infinite; }
+@keyframes pulse { 50% { opacity: 0.7; } }
+@media print { .no-print { display: none !important; } }
+.success-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.875rem; }
+.grade-excellent { background: #dcfce7; color: #166534; }
+.grade-good { background: #fef3c7; color: #92400e; }
+.grade-pass { background: #dbeafe; color: #1e40af; }
+.grade-fail { background: #fee2e2; color: #991b1b; }
+.lang-switch { position: fixed; top: 16px; left: 16px; z-index: 100; background: white; padding: 6px; border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: flex; gap: 4px; border: 2px solid #2563eb; }
+body.en-mode .lang-switch { left: auto; right: 16px; }
+.lang-btn { padding: 6px 14px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: all 0.3s; border: none; font-size: 0.875rem; background: transparent; color: #6b7280; }
+.lang-btn.active { background: #2563eb; color: white; box-shadow: 0 2px 6px rgba(37,99,235,0.4); }
+.shuffle-badge { display: inline-block; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; margin-right: 8px; }
+body.en-mode .shuffle-badge { margin-right: 0; margin-left: 8px; }
+.math-display { display: inline-block; direction: ltr; font-family: 'Amiri', serif; font-size: 1.1em; padding: 2px 6px; background: #dbeafe; border-radius: 4px; margin: 2px; color: #1e40af; font-weight: 600; }
+.save-indicator { position: fixed; bottom: 20px; left: 20px; z-index: 200; background: #10b981; color: white; padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+body.en-mode .save-indicator { left: auto; right: 20px; }
+.save-indicator.show { opacity: 1; }
+.formula-box { background: #dbeafe; border: 2px solid #2563eb; border-radius: 8px; padding: 12px; margin: 10px 0; font-family: 'Amiri', serif; direction: ltr; text-align: center; }
+.svg-graph { display: block; margin: 12px auto; background: white; border: 2px solid #e5e7eb; border-radius: 12px; padding: 8px; max-width: 100%; }
+.graph-container { text-align: center; margin: 10px 0; }
+.module-badge { display: inline-block; padding: 4px 16px; border-radius: 20px; font-weight: bold; font-size: 0.85rem; margin-bottom: 8px; }
+.module-1 { background: #dbeafe; color: #1e40af; }
+.module-2 { background: #fce7f3; color: #9f1239; }
+.module-3 { background: #ecfdf5; color: #065f46; }
+.module-4 { background: #fef3c7; color: #92400e; }
+.module-5 { background: #ede9fe; color: #5b21b6; }
+.module-6 { background: #fee2e2; color: #991b1b; }
+</style>
+</head>
+<body class="p-4 md:p-8 min-h-screen">
+
+<div class="lang-switch no-print">
+<button class="lang-btn active" onclick="setLanguage('ar')" id="btn-ar">عربي</button>
+<button class="lang-btn" onclick="setLanguage('en')" id="btn-en">EN</button>
+</div>
+
+<div id="saveIndicator" class="save-indicator">💾 <span data-ar="تم الحفظ" data-en="Saved">تم الحفظ</span></div>
+
+<div id="timer-container" class="max-w-5xl mx-auto mb-4 text-center no-print">
+<div class="bg-white p-4 rounded-2xl shadow-lg inline-block border-2 border-blue-100">
+<span class="text-gray-600 ml-2">⏰ <span data-ar="الوقت المتبقي:" data-en="Time Left:">الوقت المتبقي:</span></span>
+<span id="timer" class="text-2xl font-bold text-blue-700 font-mono">60:00</span>
+<span class="shuffle-badge">📐 <span data-ar="إكمال المربع" data-en="Completing the Square">إكمال المربع</span> - 30 <span data-ar="سؤال" data-en="Questions">سؤال</span></span>
+</div>
+</div>
+
+<div class="max-w-5xl mx-auto mb-6 flex flex-wrap gap-3 justify-center no-print">
+<button onclick="toggleAnswers()" class="bg-blue-700 hover:bg-blue-800 text-white px-5 py-2 rounded-xl font-medium transition shadow">👀 <span data-ar="إظهار/إخفاء الإجابات" data-en="Show/Hide Answers">إظهار/إخفاء الإجابات</span></button>
+<button onclick="window.print()" class="bg-gray-700 hover:bg-gray-900 text-white px-5 py-2 rounded-xl font-medium transition shadow">🖨️ <span data-ar="طباعة" data-en="Print">طباعة</span></button>
+<button onclick="reshuffleExam()" class="bg-gradient-to-r from-blue-700 to-indigo-600 hover:from-blue-800 hover:to-indigo-700 text-white px-5 py-2 rounded-xl font-medium transition shadow">🔄 <span data-ar="أسئلة جديدة" data-en="New Questions">أسئلة جديدة</span></button>
+<button onclick="clearProgress()" class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-xl font-medium transition shadow">🗑️ <span data-ar="مسح التقدم" data-en="Clear Progress">مسح التقدم</span></button>
+</div>
+
+<header class="max-w-5xl mx-auto bg-white p-8 rounded-3xl shadow-2xl mb-8 border-4 border-blue-500">
+<div class="text-center">
+<div class="inline-block bg-blue-700 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">MATH GRADE 12 GENERAL - QUESTION 5</div>
+<h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">📐 <span data-ar="إكمال المربع في حالة ثلاثي حدود ليس مربعاً كاملاً" data-en="Completing the Square for Non-Perfect Square Trinomials">إكمال المربع في حالة ثلاثي حدود ليس مربعاً كاملاً</span></h1>
+<h2 class="text-xl text-blue-700 font-semibold mb-2"><span data-ar="رياضيات صف 12 عام - ص 24-25 (مثال 1)" data-en="Grade 12 General - Pages 24-25 (Example 1)">رياضيات صف 12 عام - ص 24-25 (مثال 1)</span></h2>
+<p class="text-gray-600 mb-4"><span data-ar="Finding c to make a Perfect Square Trinomial & Vertex Form" data-en="Finding c to make a Perfect Square Trinomial & Vertex Form">إيجاد c لجعل ثلاثي الحدود مربعاً كاملاً وصيغة الرأس</span></p>
+<p class="text-sm text-green-600 font-semibold">💾 <span data-ar="يتم حفظ تقدمك تلقائياً - 30 سؤالاً في 6 أقسام" data-en="Your progress is auto-saved - 30 questions in 6 sections">يتم حفظ تقدمك تلقائياً - 30 سؤالاً في 6 أقسام</span></p>
+</div>
+<div class="mt-6 flex flex-wrap justify-center gap-4 text-sm text-gray-600">
+<span>📅 <span data-ar="التاريخ:" data-en="Date:">التاريخ:</span> <input type="text" id="examDate" class="border-b-2 border-blue-300 bg-transparent w-32 text-center"></span>
+<span>😊 <span data-ar="الاسم:" data-en="Name:">الاسم:</span> <input type="text" id="studentName" class="border-b-2 border-blue-300 bg-transparent w-40 text-center" data-placeholder-ar="اكتب اسمك" data-placeholder-en="Your name" placeholder="اكتب اسمك"></span>
+<span>🏫 <span data-ar="الشعبة:" data-en="Class:">الشعبة:</span> <input type="text" id="studentClass" class="border-b-2 border-blue-300 bg-transparent w-32 text-center" data-placeholder-ar="الشعبة" data-placeholder-en="Class" placeholder="الشعبة"></span>
+<span>⏰ <span data-ar="المدة: 60 دقيقة" data-en="Duration: 60 min">المدة: 60 دقيقة</span></span>
+<span>📊 <span data-ar="المجموع: 100 درجة" data-en="Total: 100 points">المجموع: 100 درجة</span></span>
+</div>
+</header>
+
+<div class="max-w-5xl mx-auto mb-6 bg-white p-4 rounded-xl shadow-lg border-2 border-blue-200 no-print">
+<h3 class="font-bold text-lg mb-3 text-blue-800 text-center">📐 <span data-ar="القاعدة الأساسية" data-en="Key Rule">القاعدة الأساسية</span></h3>
+<div class="grid md:grid-cols-2 gap-3 text-sm">
+<div class="formula-box">
+<strong><span data-ar="لجعل x² + bx + c مربعاً كاملاً:" data-en="To make x² + bx + c a perfect square:">لجعل x² + bx + c مربعاً كاملاً:</span></strong><br>
+<span class="math-display">c = (b/2)²</span><br>
+<span data-ar="الناتج: (x + b/2)²" data-en="Result: (x + b/2)²">الناتج: (x + b/2)²</span>
+</div>
+<div class="formula-box">
+<strong><span data-ar="صيغة الرأس:" data-en="Vertex Form:">صيغة الرأس:</span></strong><br>
+<span class="math-display">f(x) = a(x - h)² + k</span><br>
+<span data-ar="الرأس: (h, k)" data-en="Vertex: (h, k)">الرأس: (h, k)</span>
+</div>
+<div class="formula-box">
+<strong><span data-ar="خطوات إكمال المربع:" data-en="Completing Square Steps:">خطوات إكمال المربع:</span></strong><br>
+<span data-ar="1. اجعل معامل x² = 1" data-en="1. Make coefficient of x² = 1">1. اجعل معامل x² = 1</span><br>
+<span data-ar="2. أضف (b/2)² للطرفين" data-en="2. Add (b/2)² to both sides">2. أضف (b/2)² للطرفين</span><br>
+<span data-ar="3. اكتب على شكل مربع كامل" data-en="3. Write as perfect square">3. اكتب على شكل مربع كامل</span>
+</div>
+<div class="formula-box">
+<strong><span data-ar="أمثلة:" data-en="Examples:">أمثلة:</span></strong><br>
+<span class="math-display">x² + 6x + 9 = (x + 3)²</span><br>
+<span class="math-display">x² - 8x + 16 = (x - 4)²</span>
+</div>
+</div>
+</div>
+
+<main class="max-w-5xl mx-auto space-y-8" id="exam-content"></main>
+
+<div class="text-center no-print pb-8 mt-8">
+<button onclick="gradeExam()" class="bg-gradient-to-r from-blue-700 to-indigo-600 hover:from-blue-800 hover:to-indigo-700 text-white text-lg px-12 py-4 rounded-2xl font-bold shadow-xl transition transform hover:scale-105">🎯 <span data-ar="صحح إجاباتي!" data-en="Grade My Exam!">صحح إجاباتي!</span></button>
+</div>
+
+<div id="results-panel" class="max-w-5xl mx-auto mt-8 bg-white p-8 rounded-3xl shadow-2xl border-4 border-blue-500 hidden no-print">
+<h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">🏆 <span data-ar="نتيجتك يا بطل!" data-en="Your Result, Champion!">نتيجتك يا بطل!</span> 🏆</h2>
+<div class="grid md:grid-cols-3 gap-4 mb-6">
+<div class="bg-blue-50 p-4 rounded-xl text-center"><p>😊 <span data-ar="الاسم" data-en="Name">الاسم</span></p><p id="res-name" class="font-bold text-xl text-blue-700">-</p></div>
+<div class="bg-indigo-50 p-4 rounded-xl text-center"><p>📅 <span data-ar="التاريخ" data-en="Date">التاريخ</span></p><p id="res-date" class="font-bold text-xl text-indigo-700">-</p></div>
+<div class="bg-blue-50 p-4 rounded-xl text-center"><p>🌟 <span data-ar="المجموع" data-en="Total">المجموع</span></p><p id="res-total" class="font-bold text-3xl text-blue-700">0 / 100</p></div>
+</div>
+<div class="text-center mb-6">
+<span id="success-badge" class="success-badge grade-excellent">-</span>
+<p id="success-percent" class="text-4xl font-bold text-blue-700 mt-2">0%</p>
+<p class="text-sm text-gray-500"><span data-ar="نسبة النجاح" data-en="Success Rate">نسبة النجاح</span></p>
+</div>
+<div class="bg-gray-50 p-6 rounded-xl mb-6">
+<h3 class="font-bold text-lg mb-4 text-gray-800">📊 <span data-ar="أداؤك في كل قسم:" data-en="Your Performance by Section:">أداؤك في كل قسم:</span></h3>
+<div class="space-y-3" id="sections-performance"></div>
+</div>
+<div class="text-center">
+<button id="sendEmailBtn" onclick="sendResultsToEmail()" class="bg-gradient-to-r from-blue-700 to-indigo-600 text-white text-lg px-8 py-3 rounded-2xl font-bold shadow-xl transition">📧 <span data-ar="أرسل النتيجة للمعلم" data-en="Send Result to Teacher">أرسل النتيجة للمعلم</span></button>
+<p id="emailStatus" class="text-sm mt-2 text-center font-medium"></p>
+</div>
+</div>
+
+<footer class="max-w-5xl mx-auto mt-10 mb-8 text-center text-gray-500 text-sm no-print">
+© Completing the Square - Grade 12 General | Mr. Mohammed Hesham 📐
+</footer>
+
+<script>
+const PUBLIC_KEY = "Rb3Lq8tXaFmc5YHUH";
+const SERVICE_ID = "service_w15m64i";
+const TEMPLATE_ID = "template_5b0u2tq";
+const TARGET_EMAIL = "mohammedhesham872@gmail.com";
+emailjs.init(PUBLIC_KEY);
+
+const STORAGE_KEY = 'completing_square_grade12_v1';
+const TOTAL_TIME = 3600;
+const TOTAL_QUESTIONS = 30;
+const TOTAL_SECTIONS = 6;
+const QUESTIONS_PER_SECTION = 5;
+
+let currentSeed = null;
+let answersVisible = false;
+let saveIndicatorTimeout = null;
+let currentLang = 'ar';
+let timeRemaining = TOTAL_TIME;
+let timerInterval;
+let examData;
+let correctAnswersMap = {};
+let rng = null;
+
+function mulberry32(a) {
+    return function() {
+        var t = a += 0x6D2B79F5;
+        t = Math.imul(t ^ t >>> 15, t | 1);
+        t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    }
+}
+
+function showSaveIndicator() {
+    const indicator = document.getElementById('saveIndicator');
+    indicator.classList.add('show');
+    if (saveIndicatorTimeout) clearTimeout(saveIndicatorTimeout);
+    saveIndicatorTimeout = setTimeout(() => indicator.classList.remove('show'), 1500);
+}
+
+function saveState(showIndicator = true) {
+    try {
+        const state = {
+            seed: currentSeed, lang: currentLang,
+            studentName: document.getElementById('studentName').value,
+            studentClass: document.getElementById('studentClass').value,
+            examDate: document.getElementById('examDate').value,
+            answers: getSelectedAnswers(),
+            timeRemaining: timeRemaining,
+            answersVisible: answersVisible, savedAt: Date.now()
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        if (showIndicator) showSaveIndicator();
+    } catch (e) { console.error('Save error:', e); }
+}
+
+function loadState() {
+    try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        return saved ? JSON.parse(saved) : null;
+    } catch (e) { return null; }
+}
+
+function getSelectedAnswers() {
+    const answers = {};
+    for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+        const selected = document.querySelector('input[name="q'+i+'"]:checked');
+        if (selected) answers[i] = selected.value;
+    }
+    return answers;
+}
+
+function restoreAnswers(answers) {
+    if (!answers) return;
+    for (const [idx, val] of Object.entries(answers)) {
+        const radio = document.querySelector('input[name="q'+idx+'"][value="'+val+'"]');
+        if (radio) radio.checked = true;
+    }
+}
+
+function clearProgress() {
+    const msg = currentLang === 'ar' ? '⚠️ هل أنت متأكد من مسح كل التقدم؟' : '⚠️ Clear all progress?';
+    if (confirm(msg)) { localStorage.removeItem(STORAGE_KEY); location.reload(); }
+}
+
+function setupAnswerListeners() {
+    document.getElementById('exam-content').addEventListener('change', (e) => {
+        if (e.target.type === 'radio') saveState();
+    });
+}
+
+function setupInputListeners() {
+    ['studentName', 'studentClass', 'examDate'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', () => saveState(false));
+            el.addEventListener('blur', () => saveState());
+        }
+    });
+}
+
+// ==================== SVG DIAGRAMS ====================
+const svgGraphs = {
+    completing_square_visual: `<svg class="svg-graph" width="500" height="380" viewBox="0 0 500 380" xmlns="http://www.w3.org/2000/svg">
+        <rect x="5" y="5" width="490" height="370" rx="12" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+        <text x="250" y="25" text-anchor="middle" font-size="14" fill="#1e40af" font-weight="bold">📐 إكمال المربع - Completing the Square</text>
+        <!-- Visual representation -->
+        <rect x="50" y="60" width="120" height="120" fill="#bfdbfe" stroke="#2563eb" stroke-width="2"/>
+        <text x="110" y="125" text-anchor="middle" font-size="14" fill="#1e40af" font-weight="bold">x²</text>
+        <rect x="170" y="60" width="60" height="120" fill="#93c5fd" stroke="#2563eb" stroke-width="2"/>
+        <text x="200" y="125" text-anchor="middle" font-size="12" fill="#1e40af">(b/2)x</text>
+        <rect x="50" y="180" width="120" height="60" fill="#93c5fd" stroke="#2563eb" stroke-width="2"/>
+        <text x="110" y="215" text-anchor="middle" font-size="12" fill="#1e40af">(b/2)x</text>
+        <rect x="170" y="180" width="60" height="60" fill="#fbbf24" stroke="#f59e0b" stroke-width="2"/>
+        <text x="200" y="215" text-anchor="middle" font-size="11" fill="#92400e" font-weight="bold">(b/2)²</text>
+        <text x="200" y="260" text-anchor="middle" font-size="12" fill="#1e40af" font-weight="bold">Complete Square!</text>
+        <!-- Formula -->
+        <rect x="20" y="280" width="460" height="80" rx="6" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+        <text x="250" y="300" text-anchor="middle" font-size="13" fill="#92400e" font-family="'Amiri', serif" font-weight="bold">x² + bx + c is perfect square when c = (b/2)²</text>
+        <text x="250" y="320" text-anchor="middle" font-size="12" fill="#92400e" font-family="'Amiri', serif">Result: (x + b/2)²</text>
+        <text x="250" y="340" text-anchor="middle" font-size="11" fill="#92400e">Example: x² + 6x + ? → c = (6/2)² = 9 → (x + 3)²</text>
+        <text x="250" y="355" text-anchor="middle" font-size="11" fill="#92400e">Example: x² - 8x + ? → c = (-8/2)² = 16 → (x - 4)²</text>
+    </svg>`,
+    
+    q18_solution: `<svg class="svg-graph" width="500" height="320" viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg">
+        <rect x="5" y="5" width="490" height="310" rx="12" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+        <text x="250" y="25" text-anchor="middle" font-size="14" fill="#92400e" font-weight="bold">📝 السؤال 18: x² + 4x + c</text>
+        <!-- Step 1 -->
+        <rect x="20" y="45" width="460" height="50" rx="6" fill="#fde68a" stroke="#f59e0b" stroke-width="2"/>
+        <text x="250" y="65" text-anchor="middle" font-size="12" fill="#92400e" font-weight="bold">Step 1: Identify b = 4</text>
+        <text x="250" y="85" text-anchor="middle" font-size="11" fill="#92400e">In x² + bx + c, b = 4</text>
+        <!-- Step 2 -->
+        <rect x="20" y="105" width="460" height="50" rx="6" fill="#fde68a" stroke="#f59e0b" stroke-width="2"/>
+        <text x="250" y="125" text-anchor="middle" font-size="12" fill="#92400e" font-weight="bold">Step 2: Calculate (b/2)²</text>
+        <text x="250" y="145" text-anchor="middle" font-size="12" fill="#92400e" font-family="'Amiri', serif">(4/2)² = 2² = 4</text>
+        <!-- Step 3 -->
+        <rect x="20" y="165" width="460" height="50" rx="6" fill="#fde68a" stroke="#f59e0b" stroke-width="2"/>
+        <text x="250" y="185" text-anchor="middle" font-size="12" fill="#92400e" font-weight="bold">Step 3: c = 4</text>
+        <text x="250" y="205" text-anchor="middle" font-size="12" fill="#92400e" font-family="'Amiri', serif">x² + 4x + 4 = (x + 2)² ✓</text>
+        <!-- Verification -->
+        <rect x="20" y="225" width="460" height="70" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+        <text x="250" y="245" text-anchor="middle" font-size="11" fill="#166534" font-weight="bold">✓ Verification:</text>
+        <text x="250" y="263" text-anchor="middle" font-size="11" fill="#166534" font-family="'Amiri', serif">(x + 2)² = x² + 4x + 4 ✓</text>
+        <text x="250" y="283" text-anchor="middle" font-size="11" fill="#166534" font-weight="bold">Answer: c = 4 (option c)</text>
+    </svg>`,
+    
+    q19_solution: `<svg class="svg-graph" width="500" height="320" viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg">
+        <rect x="5" y="5" width="490" height="310" rx="12" fill="#fce7f3" stroke="#ec4899" stroke-width="2"/>
+        <text x="250" y="25" text-anchor="middle" font-size="14" fill="#9f1239" font-weight="bold">📝 السؤال 19: r² - 8r + c</text>
+        <!-- Step 1 -->
+        <rect x="20" y="45" width="460" height="50" rx="6" fill="#fbcfe8" stroke="#ec4899" stroke-width="2"/>
+        <text x="250" y="65" text-anchor="middle" font-size="12" fill="#9f1239" font-weight="bold">Step 1: Identify b = -8</text>
+        <text x="250" y="85" text-anchor="middle" font-size="11" fill="#9f1239">In r² + br + c, b = -8</text>
+        <!-- Step 2 -->
+        <rect x="20" y="105" width="460" height="50" rx="6" fill="#fbcfe8" stroke="#ec4899" stroke-width="2"/>
+        <text x="250" y="125" text-anchor="middle" font-size="12" fill="#9f1239" font-weight="bold">Step 2: Calculate (b/2)²</text>
+        <text x="250" y="145" text-anchor="middle" font-size="12" fill="#9f1239" font-family="'Amiri', serif">(-8/2)² = (-4)² = 16</text>
+        <!-- Step 3 -->
+        <rect x="20" y="165" width="460" height="50" rx="6" fill="#fbcfe8" stroke="#ec4899" stroke-width="2"/>
+        <text x="250" y="185" text-anchor="middle" font-size="12" fill="#9f1239" font-weight="bold">Step 3: c = 16</text>
+        <text x="250" y="205" text-anchor="middle" font-size="12" fill="#9f1239" font-family="'Amiri', serif">r² - 8r + 16 = (r - 4)² ✓</text>
+        <!-- Verification -->
+        <rect x="20" y="225" width="460" height="70" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+        <text x="250" y="245" text-anchor="middle" font-size="11" fill="#166534" font-weight="bold">✓ Verification:</text>
+        <text x="250" y="263" text-anchor="middle" font-size="11" fill="#166534" font-family="'Amiri', serif">(r - 4)² = r² - 8r + 16 ✓</text>
+        <text x="250" y="283" text-anchor="middle" font-size="11" fill="#166534" font-weight="bold">Answer: c = 16 (option d)</text>
+    </svg>`,
+    
+    q20_solution: `<svg class="svg-graph" width="500" height="320" viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg">
+        <rect x="5" y="5" width="490" height="310" rx="12" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+        <text x="250" y="25" text-anchor="middle" font-size="14" fill="#065f46" font-weight="bold">📝 السؤال 20: x² - 12x + c</text>
+        <!-- Step 1 -->
+        <rect x="20" y="45" width="460" height="50" rx="6" fill="#d1fae5" stroke="#10b981" stroke-width="2"/>
+        <text x="250" y="65" text-anchor="middle" font-size="12" fill="#065f46" font-weight="bold">Step 1: Identify b = -12</text>
+        <text x="250" y="85" text-anchor="middle" font-size="11" fill="#065f46">In x² + bx + c, b = -12</text>
+        <!-- Step 2 -->
+        <rect x="20" y="105" width="460" height="50" rx="6" fill="#d1fae5" stroke="#10b981" stroke-width="2"/>
+        <text x="250" y="125" text-anchor="middle" font-size="12" fill="#065f46" font-weight="bold">Step 2: Calculate (b/2)²</text>
+        <text x="250" y="145" text-anchor="middle" font-size="12" fill="#065f46" font-family="'Amiri', serif">(-12/2)² = (-6)² = 36</text>
+        <!-- Step 3 -->
+        <rect x="20" y="165" width="460" height="50" rx="6" fill="#d1fae5" stroke="#10b981" stroke-width="2"/>
+        <text x="250" y="185" text-anchor="middle" font-size="12" fill="#065f46" font-weight="bold">Step 3: c = 36</text>
+        <text x="250" y="205" text-anchor="middle" font-size="12" fill="#065f46" font-family="'Amiri', serif">x² - 12x + 36 = (x - 6)² ✓</text>
+        <!-- Verification -->
+        <rect x="20" y="225" width="460" height="70" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+        <text x="250" y="245" text-anchor="middle" font-size="11" fill="#166534" font-weight="bold">✓ Verification:</text>
+        <text x="250" y="263" text-anchor="middle" font-size="11" fill="#166534" font-family="'Amiri', serif">(x - 6)² = x² - 12x + 36 ✓</text>
+        <text x="250" y="283" text-anchor="middle" font-size="11" fill="#166534" font-weight="bold">Answer: c = 36 (option b)</text>
+    </svg>`,
+    
+    q21_solution: `<svg class="svg-graph" width="500" height="340" viewBox="0 0 500 340" xmlns="http://www.w3.org/2000/svg">
+        <rect x="5" y="5" width="490" height="330" rx="12" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+        <text x="250" y="25" text-anchor="middle" font-size="14" fill="#5b21b6" font-weight="bold">📝 السؤال 21: x² + 5x + c (معامل كسري)</text>
+        <!-- Step 1 -->
+        <rect x="20" y="45" width="460" height="50" rx="6" fill="#ddd6fe" stroke="#7c3aed" stroke-width="2"/>
+        <text x="250" y="65" text-anchor="middle" font-size="12" fill="#5b21b6" font-weight="bold">Step 1: Identify b = 5</text>
+        <text x="250" y="85" text-anchor="middle" font-size="11" fill="#5b21b6">In x² + bx + c, b = 5 (odd number!)</text>
+        <!-- Step 2 -->
+        <rect x="20" y="105" width="460" height="60" rx="6" fill="#ddd6fe" stroke="#7c3aed" stroke-width="2"/>
+        <text x="250" y="125" text-anchor="middle" font-size="12" fill="#5b21b6" font-weight="bold">Step 2: Calculate (b/2)²</text>
+        <text x="250" y="145" text-anchor="middle" font-size="12" fill="#5b21b6" font-family="'Amiri', serif">(5/2)² = 25/4</text>
+        <text x="250" y="160" text-anchor="middle" font-size="10" fill="#5b21b6">Note: When b is odd, c will be a fraction!</text>
+        <!-- Step 3 -->
+        <rect x="20" y="175" width="460" height="50" rx="6" fill="#ddd6fe" stroke="#7c3aed" stroke-width="2"/>
+        <text x="250" y="195" text-anchor="middle" font-size="12" fill="#5b21b6" font-weight="bold">Step 3: c = 25/4</text>
+        <text x="250" y="215" text-anchor="middle" font-size="12" fill="#5b21b6" font-family="'Amiri', serif">x² + 5x + 25/4 = (x + 5/2)² ✓</text>
+        <!-- Verification -->
+        <rect x="20" y="235" width="460" height="80" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+        <text x="250" y="255" text-anchor="middle" font-size="11" fill="#166534" font-weight="bold">✓ Verification:</text>
+        <text x="250" y="273" text-anchor="middle" font-size="11" fill="#166534" font-family="'Amiri', serif">(x + 5/2)² = x² + 2(5/2)x + (5/2)²</text>
+        <text x="250" y="290" text-anchor="middle" font-size="11" fill="#166534" font-family="'Amiri', serif">= x² + 5x + 25/4 ✓</text>
+        <text x="250" y="310" text-anchor="middle" font-size="11" fill="#166534" font-weight="bold">Answer: c = 25/4 (option d)</text>
+    </svg>`,
+    
+    vertex_form_conversion: `<svg class="svg-graph" width="500" height="400" viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+        <rect x="5" y="5" width="490" height="390" rx="12" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+        <text x="250" y="25" text-anchor="middle" font-size="14" fill="#92400e" font-weight="bold">📐 تحويل الصيغة العامة إلى صيغة الرأس</text>
+        <!-- Example -->
+        <rect x="20" y="45" width="460" height="50" rx="6" fill="#fde68a" stroke="#f59e0b" stroke-width="2"/>
+        <text x="250" y="65" text-anchor="middle" font-size="12" fill="#92400e" font-weight="bold">Example: Convert f(x) = x² + 6x + 5 to vertex form</text>
+        <text x="250" y="85" text-anchor="middle" font-size="11" fill="#92400e" font-family="'Amiri', serif">Standard form: ax² + bx + c → Vertex form: a(x-h)² + k</text>
+        <!-- Step 1 -->
+        <rect x="20" y="105" width="460" height="45" rx="6" fill="#fde68a" stroke="#f59e0b" stroke-width="2"/>
+        <text x="250" y="125" text-anchor="middle" font-size="11" fill="#92400e" font-weight="bold">Step 1: Group x terms: (x² + 6x) + 5</text>
+        <!-- Step 2 -->
+        <rect x="20" y="160" width="460" height="45" rx="6" fill="#fde68a" stroke="#f59e0b" stroke-width="2"/>
+        <text x="250" y="180" text-anchor="middle" font-size="11" fill="#92400e" font-weight="bold">Step 2: Complete the square: (6/2)² = 9</text>
+        <text x="250" y="198" text-anchor="middle" font-size="10" fill="#92400e">Add and subtract 9: (x² + 6x + 9 - 9) + 5</text>
+        <!-- Step 3 -->
+        <rect x="20" y="215" width="460" height="45" rx="6" fill="#fde68a" stroke="#f59e0b" stroke-width="2"/>
+        <text x="250" y="235" text-anchor="middle" font-size="11" fill="#92400e" font-weight="bold">Step 3: Write as perfect square: (x + 3)² - 9 + 5</text>
+        <!-- Step 4 -->
+        <rect x="20" y="270" width="460" height="45" rx="6" fill="#fde68a" stroke="#f59e0b" stroke-width="2"/>
+        <text x="250" y="290" text-anchor="middle" font-size="11" fill="#92400e" font-weight="bold">Step 4: Simplify: (x + 3)² - 4</text>
+        <!-- Result -->
+        <rect x="20" y="325" width="460" height="60" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+        <text x="250" y="345" text-anchor="middle" font-size="12" fill="#166534" font-weight="bold">Vertex Form: f(x) = (x + 3)² - 4</text>
+        <text x="250" y="365" text-anchor="middle" font-size="11" fill="#166534">Vertex: (-3, -4) | Opens Up | Minimum = -4</text>
+        <text x="250" y="380" text-anchor="middle" font-size="10" fill="#166534">Axis of symmetry: x = -3</text>
+    </svg>`,
+    
+    perfect_square_examples: `<svg class="svg-graph" width="500" height="360" viewBox="0 0 500 360" xmlns="http://www.w3.org/2000/svg">
+        <rect x="5" y="5" width="490" height="350" rx="12" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+        <text x="250" y="25" text-anchor="middle" font-size="14" fill="#065f46" font-weight="bold">📊 أمثلة على المربعات الكاملة</text>
+        <!-- Example 1 -->
+        <rect x="20" y="45" width="460" height="50" rx="6" fill="#d1fae5" stroke="#10b981" stroke-width="2"/>
+        <text x="250" y="65" text-anchor="middle" font-size="11" fill="#065f46" font-weight="bold">Example 1: x² + 10x + 25 = (x + 5)²</text>
+        <text x="250" y="85" text-anchor="middle" font-size="10" fill="#065f46">b = 10, c = (10/2)² = 25 ✓</text>
+        <!-- Example 2 -->
+        <rect x="20" y="105" width="460" height="50" rx="6" fill="#d1fae5" stroke="#10b981" stroke-width="2"/>
+        <text x="250" y="125" text-anchor="middle" font-size="11" fill="#065f46" font-weight="bold">Example 2: x² - 14x + 49 = (x - 7)²</text>
+        <text x="250" y="145" text-anchor="middle" font-size="10" fill="#065f46">b = -14, c = (-14/2)² = 49 ✓</text>
+        <!-- Example 3 -->
+        <rect x="20" y="165" width="460" height="50" rx="6" fill="#d1fae5" stroke="#10b981" stroke-width="2"/>
+        <text x="250" y="185" text-anchor="middle" font-size="11" fill="#065f46" font-weight="bold">Example 3: x² + 3x + 9/4 = (x + 3/2)²</text>
+        <text x="250" y="205" text-anchor="middle" font-size="10" fill="#065f46">b = 3, c = (3/2)² = 9/4 ✓ (fractional!)</text>
+        <!-- Example 4 -->
+        <rect x="20" y="225" width="460" height="50" rx="6" fill="#d1fae5" stroke="#10b981" stroke-width="2"/>
+        <text x="250" y="245" text-anchor="middle" font-size="11" fill="#065f46" font-weight="bold">Example 4: x² - x + 1/4 = (x - 1/2)²</text>
+        <text x="250" y="265" text-anchor="middle" font-size="10" fill="#065f46">b = -1, c = (-1/2)² = 1/4 ✓</text>
+        <!-- Pattern -->
+        <rect x="20" y="285" width="460" height="60" rx="6" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+        <text x="250" y="305" text-anchor="middle" font-size="11" fill="#92400e" font-weight="bold">🔑 Pattern Recognition:</text>
+        <text x="250" y="323" text-anchor="middle" font-size="10" fill="#92400e">• Last term is always (b/2)²</text>
+        <text x="250" y="338" text-anchor="middle" font-size="10" fill="#92400e">• Middle term sign determines sign in binomial</text>
+    </svg>`,
+    
+    common_mistakes: `<svg class="svg-graph" width="500" height="380" viewBox="0 0 500 380" xmlns="http://www.w3.org/2000/svg">
+        <rect x="5" y="5" width="490" height="370" rx="12" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+        <text x="250" y="25" text-anchor="middle" font-size="14" fill="#991b1b" font-weight="bold">⚠️ أخطاء شائعة - Common Mistakes</text>
+        <!-- Mistake 1 -->
+        <rect x="20" y="45" width="460" height="70" rx="6" fill="#fecaca" stroke="#dc2626" stroke-width="2"/>
+        <text x="250" y="65" text-anchor="middle" font-size="11" fill="#991b1b" font-weight="bold">Mistake 1: Forgetting to square (b/2)</text>
+        <text x="250" y="83" text-anchor="middle" font-size="10" fill="#991b1b">Wrong: x² + 6x + 3 = (x + 3)² ✗</text>
+        <text x="250" y="100" text-anchor="middle" font-size="10" fill="#991b1b">Correct: x² + 6x + 9 = (x + 3)² ✓ (must square!)</text>
+        <!-- Mistake 2 -->
+        <rect x="20" y="125" width="460" height="70" rx="6" fill="#fecaca" stroke="#dc2626" stroke-width="2"/>
+        <text x="250" y="145" text-anchor="middle" font-size="11" fill="#991b1b" font-weight="bold">Mistake 2: Wrong sign in binomial</text>
+        <text x="250" y="163" text-anchor="middle" font-size="10" fill="#991b1b">Wrong: x² - 8x + 16 = (x + 4)² ✗</text>
+        <text x="250" y="180" text-anchor="middle" font-size="10" fill="#991b1b">Correct: x² - 8x + 16 = (x - 4)² ✓ (same sign as b/2)</text>
+        <!-- Mistake 3 -->
+        <rect x="20" y="205" width="460" height="70" rx="6" fill="#fecaca" stroke="#dc2626" stroke-width="2"/>
+        <text x="250" y="225" text-anchor="middle" font-size="11" fill="#991b1b" font-weight="bold">Mistake 3: Not dividing b by 2 first</text>
+        <text x="250" y="243" text-anchor="middle" font-size="10" fill="#991b1b">Wrong: x² + 10x + 100 = (x + 10)² ✗</text>
+        <text x="250" y="260" text-anchor="middle" font-size="10" fill="#991b1b">Correct: x² + 10x + 25 = (x + 5)² ✓ (use b/2, not b)</text>
+        <!-- Mistake 4 -->
+        <rect x="20" y="285" width="460" height="70" rx="6" fill="#fecaca" stroke="#dc2626" stroke-width="2"/>
+        <text x="250" y="305" text-anchor="middle" font-size="11" fill="#991b1b" font-weight="bold">Mistake 4: Forgetting fractions when b is odd</text>
+        <text x="250" y="323" text-anchor="middle" font-size="10" fill="#991b1b">Wrong: x² + 5x + 5 = (x + 5/2)² ✗</text>
+        <text x="250" y="340" text-anchor="middle" font-size="10" fill="#991b1b">Correct: x² + 5x + 25/4 = (x + 5/2)² ✓</text>
+    </svg>`,
+    
+    practice_table: `<svg class="svg-graph" width="500" height="400" viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+        <rect x="5" y="5" width="490" height="390" rx="12" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+        <text x="250" y="25" text-anchor="middle" font-size="14" fill="#92400e" font-weight="bold">📋 جدول التدريب - Practice Table</text>
+        <!-- Table header -->
+        <rect x="20" y="45" width="120" height="35" fill="#fde68a" stroke="#f59e0b" stroke-width="2"/>
+        <text x="80" y="68" text-anchor="middle" font-size="11" fill="#92400e" font-weight="bold">Expression</text>
+        <rect x="140" y="45" width="100" height="35" fill="#fde68a" stroke="#f59e0b" stroke-width="2"/>
+        <text x="190" y="68" text-anchor="middle" font-size="11" fill="#92400e" font-weight="bold">b</text>
+        <rect x="240" y="45" width="100" height="35" fill="#fde68a" stroke="#f59e0b" stroke-width="2"/>
+        <text x="290" y="68" text-anchor="middle" font-size="11" fill="#92400e" font-weight="bold">b/2</text>
+        <rect x="340" y="45" width="140" height="35" fill="#fde68a" stroke="#f59e0b" stroke-width="2"/>
+        <text x="410" y="68" text-anchor="middle" font-size="11" fill="#92400e" font-weight="bold">c = (b/2)²</text>
+        <!-- Row 1 -->
+        <rect x="20" y="80" width="120" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+        <text x="80" y="100" text-anchor="middle" font-size="10" fill="#92400e">x² + 4x</text>
+        <rect x="140" y="80" width="100" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+        <text x="190" y="100" text-anchor="middle" font-size="10" fill="#92400e">4</text>
+        <rect x="240" y="80" width="100" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+        <text x="290" y="100" text-anchor="middle" font-size="10" fill="#92400e">2</text>
+        <rect x="340" y="80" width="140" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+        <text x="410" y="100" text-anchor="middle" font-size="10" fill="#92400e">4</text>
+        <!-- Row 2 -->
+        <rect x="20" y="110" width="120" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+        <text x="80" y="130" text-anchor="middle" font-size="10" fill="#92400e">x² - 8x</text>
+        <rect x="140" y="110" width="100" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+        <text x="190" y="130" text-anchor="middle" font-size="10" fill="#92400e">-8</text>
+        <rect x="240" y="110" width="100" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+        <text x="290" y="130" text-anchor="middle" font-size="10" fill="#92400e">-4</text>
+        <rect x="340" y="110" width="140" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+        <text x="410" y="130" text-anchor="middle" font-size="10" fill="#92400e">16</text>
+        <!-- Row 3 -->
+        <rect x="20" y="140" width="120" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+        <text x="80" y="160" text-anchor="middle" font-size="10" fill="#92400e">x² - 12x</text>
+        <rect x="140" y="140" width="100" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+        <text x="190" y="160" text-anchor="middle" font-size="10" fill="#92400e">-12</text>
+        <rect x="240" y="140" width="100" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+        <text x="290" y="160" text-anchor="middle" font-size="10" fill="#92400e">-6</text>
+        <rect x="340" y="140" width="140" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+        <text x="410" y="160" text-anchor="middle" font-size="10" fill="#92400e">36</text>
+        <!-- Row 4 -->
+        <rect x="20" y="170" width="120" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+        <text x="80" y="190" text-anchor="middle" font-size="10" fill="#92400e">x² + 5x</text>
+        <rect x="140" y="170" width="100" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+        <text x="190" y="190" text-anchor="middle" font-size="10" fill="#92400e">5</text>
+        <rect x="240" y="170" width="100" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+        <text x="290" y="190" text-anchor="middle" font-size="10" fill="#92400e">5/2</text>
+        <rect x="340" y="170" width="140" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+        <text x="410" y="190" text-anchor="middle" font-size="10" fill="#92400e">25/4</text>
+        <!-- Row 5 -->
+        <rect x="20" y="200" width="120" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+        <text x="80" y="220" text-anchor="middle" font-size="10" fill="#92400e">x² + 7x</text>
+        <rect x="140" y="200" width="100" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+        <text x="190" y="220" text-anchor="middle" font-size="10" fill="#92400e">7</text>
+        <rect x="240" y="200" width="100" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+        <text x="290" y="220" text-anchor="middle" font-size="10" fill="#92400e">7/2</text>
+        <rect x="340" y="200" width="140" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+        <text x="410" y="220" text-anchor="middle" font-size="10" fill="#92400e">49/4</text>
+        <!-- Row 6 -->
+        <rect x="20" y="230" width="120" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+        <text x="80" y="250" text-anchor="middle" font-size="10" fill="#92400e">x² - 3x</text>
+        <rect x="140" y="230" width="100" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+        <text x="190" y="250" text-anchor="middle" font-size="10" fill="#92400e">-3</text>
+        <rect x="240" y="230" width="100" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+        <text x="290" y="250" text-anchor="middle" font-size="10" fill="#92400e">-3/2</text>
+        <rect x="340" y="230" width="140" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+        <text x="410" y="250" text-anchor="middle" font-size="10" fill="#92400e">9/4</text>
+        <!-- Tips -->
+        <rect x="20" y="275" width="460" height="105" rx="6" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+        <text x="250" y="295" text-anchor="middle" font-size="11" fill="#92400e" font-weight="bold">💡 Tips for Success:</text>
+        <text x="250" y="313" text-anchor="middle" font-size="10" fill="#92400e">1. Always identify b correctly (include the sign!)</text>
+        <text x="250" y="330" text-anchor="middle" font-size="10" fill="#92400e">2. Divide b by 2 first, THEN square</text>
+        <text x="250" y="347" text-anchor="middle" font-size="10" fill="#92400e">3. If b is odd, c will be a fraction</text>
+        <text x="250" y="364" text-anchor="middle" font-size="10" fill="#92400e">4. The sign in (x ± b/2)² matches the sign of b/2</text>
+        <text x="250" y="378" text-anchor="middle" font-size="9" fill="#92400e">5. Always verify by expanding (x ± b/2)²</text>
+    </svg>`
+};
+
+// ==================== EXAM DATA - 30 QUESTIONS ====================
+const originalExamData = {
+    sections: [
+        {
+            id: 'sec1',
+            title: { ar: '🔹 القسم 1: إيجاد c لجعل ثلاثي الحدود مربعاً كاملاً (Q1-Q5)', en: '🔹 Section 1: Finding c for Perfect Square (Q1-Q5)' },
+            questions: [
+                {
+                    q: { ar: '<strong>السؤال 1 (مثل السؤال 18):</strong> ما قيمة c التي تجعل <span class="math-display">x² + 4x + c</span> ثلاثي حدود مربعاً كاملاً؟', en: '<strong>Question 1 (like Q18):</strong> What value of c makes <span class="math-display">x² + 4x + c</span> a perfect square trinomial?' },
+                    svg: svgGraphs.q18_solution,
+                    options: [
+                        { ar: '<span class="math-display">2</span>', en: '<span class="math-display">2</span>' },
+                        { ar: '<span class="math-display">8</span>', en: '<span class="math-display">8</span>' },
+                        { ar: '<span class="math-display">4</span>', en: '<span class="math-display">4</span>' },
+                        { ar: '<span class="math-display">16</span>', en: '<span class="math-display">16</span>' }
+                    ],
+                    correct: 2,
+                    answer: { ar: 'c = (b/2)² = (4/2)² = 2² = 4. إذن x² + 4x + 4 = (x + 2)²', en: 'c = (b/2)² = (4/2)² = 2² = 4. So x² + 4x + 4 = (x + 2)²' }
+                },
+                {
+                    q: { ar: '<strong>السؤال 2 (مثل السؤال 19):</strong> ما قيمة c التي تجعل <span class="math-display">r² - 8r + c</span> ثلاثي حدود مربعاً كاملاً؟', en: '<strong>Question 2 (like Q19):</strong> What value of c makes <span class="math-display">r² - 8r + c</span> a perfect square trinomial?' },
+                    svg: svgGraphs.q19_solution,
+                    options: [
+                        { ar: '<span class="math-display">-16</span>', en: '<span class="math-display">-16</span>' },
+                        { ar: '<span class="math-display">4</span>', en: '<span class="math-display">4</span>' },
+                        { ar: '<span class="math-display">64</span>', en: '<span class="math-display">64</span>' },
+                        { ar: '<span class="math-display">16</span>', en: '<span class="math-display">16</span>' }
+                    ],
+                    correct: 3,
+                    answer: { ar: 'c = (b/2)² = (-8/2)² = (-4)² = 16. إذن r² - 8r + 16 = (r - 4)²', en: 'c = (b/2)² = (-8/2)² = (-4)² = 16. So r² - 8r + 16 = (r - 4)²' }
+                },
+                {
+                    q: { ar: '<strong>السؤال 3 (مثل السؤال 20):</strong> ما قيمة c التي تجعل <span class="math-display">x² - 12x + c</span> ثلاثي حدود مربعاً كاملاً؟', en: '<strong>Question 3 (like Q20):</strong> What value of c makes <span class="math-display">x² - 12x + c</span> a perfect square trinomial?' },
+                    svg: svgGraphs.q20_solution,
+                    options: [
+                        { ar: '<span class="math-display">6</span>', en: '<span class="math-display">6</span>' },
+                        { ar: '<span class="math-display">36</span>', en: '<span class="math-display">36</span>' },
+                        { ar: '<span class="math-display">144</span>', en: '<span class="math-display">144</span>' },
+                        { ar: '<span class="math-display">-36</span>', en: '<span class="math-display">-36</span>' }
+                    ],
+                    correct: 1,
+                    answer: { ar: 'c = (b/2)² = (-12/2)² = (-6)² = 36. إذن x² - 12x + 36 = (x - 6)²', en: 'c = (b/2)² = (-12/2)² = (-6)² = 36. So x² - 12x + 36 = (x - 6)²' }
+                },
+                {
+                    q: { ar: '<strong>السؤال 4 (مثل السؤال 21):</strong> ما قيمة c التي تجعل <span class="math-display">x² + 5x + c</span> ثلاثي حدود مربعاً كاملاً؟', en: '<strong>Question 4 (like Q21):</strong> What value of c makes <span class="math-display">x² + 5x + c</span> a perfect square trinomial?' },
+                    svg: svgGraphs.q21_solution,
+                    options: [
+                        { ar: '<span class="math-display">5/2</span>', en: '<span class="math-display">5/2</span>' },
+                        { ar: '<span class="math-display">25</span>', en: '<span class="math-display">25</span>' },
+                        { ar: '<span class="math-display">25/2</span>', en: '<span class="math-display">25/2</span>' },
+                        { ar: '<span class="math-display">25/4</span>', en: '<span class="math-display">25/4</span>' }
+                    ],
+                    correct: 3,
+                    answer: { ar: 'c = (b/2)² = (5/2)² = 25/4. إذن x² + 5x + 25/4 = (x + 5/2)²', en: 'c = (b/2)² = (5/2)² = 25/4. So x² + 5x + 25/4 = (x + 5/2)²' }
+                },
+                {
+                    q: { ar: '<strong>السؤال 5:</strong> ما قيمة c التي تجعل <span class="math-display">x² + 10x + c</span> ثلاثي حدود مربعاً كاملاً؟', en: '<strong>Question 5:</strong> What value of c makes <span class="math-display">x² + 10x + c</span> a perfect square trinomial?' },
+                    options: [
+                        { ar: '<span class="math-display">5</span>', en: '<span class="math-display">5</span>' },
+                        { ar: '<span class="math-display">10</span>', en: '<span class="math-display">10</span>' },
+                        { ar: '<span class="math-display">25</span>', en: '<span class="math-display">25</span>' },
+                        { ar: '<span class="math-display">100</span>', en: '<span class="math-display">100</span>' }
+                    ],
+                    correct: 2,
+                    answer: { ar: 'c = (b/2)² = (10/2)² = 5² = 25. إذن x² + 10x + 25 = (x + 5)²', en: 'c = (b/2)² = (10/2)² = 5² = 25. So x² + 10x + 25 = (x + 5)²' }
+                }
+            ]
+        },
+        {
+            id: 'sec2',
+            title: { ar: '🔹 القسم 2: معاملات سالبة وكسرية (Q6-Q10)', en: '🔹 Section 2: Negative & Fractional Coefficients (Q6-Q10)' },
+            questions: [
+                {
+                    q: { ar: '<strong>السؤال 6:</strong> ما قيمة c التي تجعل <span class="math-display">x² - 6x + c</span> ثلاثي حدود مربعاً كاملاً؟', en: '<strong>Question 6:</strong> What value of c makes <span class="math-display">x² - 6x + c</span> a perfect square trinomial?' },
+                    svg: svgGraphs.completing_square_visual,
+                    options: [
+                        { ar: '<span class="math-display">3</span>', en: '<span class="math-display">3</span>' },
+                        { ar: '<span class="math-display">6</span>', en: '<span class="math-display">6</span>' },
+                        { ar: '<span class="math-display">9</span>', en: '<span class="math-display">9</span>' },
+                        { ar: '<span class="math-display">36</span>', en: '<span class="math-display">36</span>' }
+                    ],
+                    correct: 2,
+                    answer: { ar: 'c = (b/2)² = (-6/2)² = (-3)² = 9. إذن x² - 6x + 9 = (x - 3)²', en: 'c = (b/2)² = (-6/2)² = (-3)² = 9. So x² - 6x + 9 = (x - 3)²' }
+                },
+                {
+                    q: { ar: '<strong>السؤال 7:</strong> ما قيمة c التي تجعل <span class="math-display">x² + 7x + c</span> ثلاثي حدود مربعاً كاملاً؟', en: '<strong>Question 7:</strong> What value of c makes <span class="math-display">x² + 7x + c</span> a perfect square trinomial?' },
+                    options: [
+                        { ar: '<span class="math-display">7/2</span>', en: '<span class="math-display">7/2</span>' },
+                        { ar: '<span class="math-display">49/2</span>', en: '<span class="math-display">49/2</span>' },
+                        { ar: '<span class="math-display">49/4</span>', en: '<span class="math-display">49/4</span>' },
+                        { ar: '<span class="math-display">7</span>', en: '<span class="math-display">7</span>' }
+                    ],
+                    correct: 2,
+                    answer: { ar: 'c = (b/2)² = (7/2)² = 49/4. إذن x² + 7x + 49/4 = (x + 7/2)²', en: 'c = (b/2)² = (7/2)² = 49/4. So x² + 7x + 49/4 = (x + 7/2)²' }
+                },
+                {
+                    q: { ar: '<strong>السؤال 8:</strong> ما قيمة c التي تجعل <span class="math-display">x² - 3x + c</span> ثلاثي حدود مربعاً كاملاً؟', en: '<strong>Question 8:</strong> What value of c makes <span class="math-display">x² - 3x + c</span> a perfect square trinomial?' },
+                    options: [
+                        { ar: '<span class="math-display">3/2</span>', en: '<span class="math-display">3/2</span>' },
+                        { ar: '<span class="math-display">9/2</span>', en: '<span class="math-display">9/2</span>' },
+                        { ar: '<span class="math-display">9/4</span>', en: '<span class="math-display">9/4</span>' },
+                        { ar: '<span class="math-display">3</span>', en: '<span class="math-display">3</span>' }
+                    ],
+                    correct: 2,
+                    answer: { ar: 'c = (b/2)² = (-3/2)² = 9/4. إذن x² - 3x + 9/4 = (x - 3/2)²', en: 'c = (b/2)² = (-3/2)² = 9/4. So x² - 3x + 9/4 = (x - 3/2)²' }
+                },
+                {
+                    q: { ar: '<strong>السؤال 9:</strong> ما قيمة c التي تجعل <span class="math-display">x² + 11x + c</span> ثلاثي حدود مربعاً كاملاً؟', en: '<strong>Question 9:</strong> What value of c makes <span class="math-display">x² + 11x + c</span> a perfect square trinomial?' },
+                    options: [
+                        { ar: '<span class="math-display">11/2</span>', en: '<span class="math-display">11/2</span>' },
+                        { ar: '<span class="math-display">121/2</span>', en: '<span class="math-display">121/2</span>' },
+                        { ar: '<span class="math-display">121/4</span>', en: '<span class="math-display">121/4</span>' },
+                        { ar: '<span class="math-display">11</span>', en: '<span class="math-display">11</span>' }
+                    ],
+                    correct: 2,
+                    answer: { ar: 'c = (b/2)² = (11/2)² = 121/4. إذن x² + 11x + 121/4 = (x + 11/2)²', en: 'c = (b/2)² = (11/2)² = 121/4. So x² + 11x + 121/4 = (x + 11/2)²' }
+                },
+                {
+                    q: { ar: '<strong>السؤال 10:</strong> ما قيمة c التي تجعل <span class="math-display">x² - 9x + c</span> ثلاثي حدود مربعاً كاملاً؟', en: '<strong>Question 10:</strong> What value of c makes <span class="math-display">x² - 9x + c</span> a perfect square trinomial?' },
+                    options: [
+                        { ar: '<span class="math-display">9/2</span>', en: '<span class="math-display">9/2</span>' },
+                        { ar: '<span class="math-display">81/2</span>', en: '<span class="math-display">81/2</span>' },
+                        { ar: '<span class="math-display">81/4</span>', en: '<span class="math-display">81/4</span>' },
+                        { ar: '<span class="math-display">9</span>', en: '<span class="math-display">9</span>' }
+                    ],
+                    correct: 2,
+                    answer: { ar: 'c = (b/2)² = (-9/2)² = 81/4. إذن x² - 9x + 81/4 = (x - 9/2)²', en: 'c = (b/2)² = (-9/2)² = 81/4. So x² - 9x + 81/4 = (x - 9/2)²' }
+                }
+            ]
+        },
+        {
+            id: 'sec3',
+            title: { ar: '🔹 القسم 3: التحليل إلى مربع كامل (Q11-Q15)', en: '🔹 Section 3: Factoring as Perfect Square (Q11-Q15)' },
+            questions: [
+                {
+                    q: { ar: '<strong>السؤال 11:</strong> ما التحليل الصحيح لـ <span class="math-display">x² + 8x + 16</span>؟', en: '<strong>Question 11:</strong> What is the correct factorization of <span class="math-display">x² + 8x + 16</span>?' },
+                    svg: svgGraphs.perfect_square_examples,
+                    options: [
+                        { ar: '<span class="math-display">(x + 4)²</span>', en: '<span class="math-display">(x + 4)²</span>' },
+                        { ar: '<span class="math-display">(x - 4)²</span>', en: '<span class="math-display">(x - 4)²</span>' },
+                        { ar: '<span class="math-display">(x + 8)²</span>', en: '<span class="math-display">(x + 8)²</span>' },
+                        { ar: '<span class="math-display">(x + 2)(x + 8)</span>', en: '<span class="math-display">(x + 2)(x + 8)</span>' }
+                    ],
+                    correct: 0,
+                    answer: { ar: 'x² + 8x + 16: b = 8, b/2 = 4, (b/2)² = 16 ✓. إذن (x + 4)²', en: 'x² + 8x + 16: b = 8, b/2 = 4, (b/2)² = 16 ✓. So (x + 4)²' }
+                },
+                {
+                    q: { ar: '<strong>السؤال 12:</strong> ما التحليل الصحيح لـ <span class="math-display">x² - 10x + 25</span>؟', en: '<strong>Question 12:</strong> What is the correct factorization of <span class="math-display">x² - 10x + 25</span>?' },
+                    options: [
+                        { ar: '<span class="math-display">(x - 5)²</span>', en: '<span class="math-display">(x - 5)²</span>' },
+                        { ar: '<span class="math-display">(x + 5)²</span>', en: '<span class="math-display">(x + 5)²</span>' },
+                        { ar: '<span class="math-display">(x - 10)²</span>', en: '<span class="math-display">(x - 10)²</span>' },
+                        { ar: '<span class="math-display">(x - 5)(x + 5)</span>', en: '<span class="math-display">(x - 5)(x + 5)</span>' }
+                    ],
+                    correct: 0,
+                    answer: { ar: 'x² - 10x + 25: b = -10, b/2 = -5, (b/2)² = 25 ✓. إذن (x - 5)²', en: 'x² - 10x + 25: b = -10, b/2 = -5, (b/2)² = 25 ✓. So (x - 5)²' }
+                },
+                {
+                    q: { ar: '<strong>السؤال 13:</strong> ما التحليل الصحيح لـ <span class="math-display">x² + 3x + 9/4</span>؟', en: '<strong>Question 13:</strong> What is the correct factorization of <span class="math-display">x² + 3x + 9/4</span>?' },
+                    options: [
+                        { ar: '<span class="math-display">(x + 3/2)²</span>', en: '<span class="math-display">(x + 3/2)²</span>' },
+                        { ar: '<span class="math-display">(x - 3/2)²</span>', en: '<span class="math-display">(x - 3/2)²</span>' },
+                        { ar: '<span class="math-display">(x + 3)²</span>', en: '<span class="math-display">(x + 3)²</span>' },
+                        { ar: '<span class="math-display">(x + 9/2)²</span>', en: '<span class="math-display">(x + 9/2)²</span>' }
+                    ],
+                    correct: 0,
+                    answer: { ar: 'x² + 3x + 9/4: b = 3, b/2 = 3/2, (b/2)² = 9/4 ✓. إذن (x + 3/2)²', en: 'x² + 3x + 9/4: b = 3, b/2 = 3/2, (b/2)² = 9/4 ✓. So (x + 3/2)²' }
+                },
+                {
+                    q: { ar: '<strong>السؤال 14:</strong> ما التحليل الصحيح لـ <span class="math-display">x² - 14x + 49</span>؟', en: '<strong>Question 14:</strong> What is the correct factorization of <span class="math-display">x² - 14x + 49</span>?' },
+                    options: [
+                        { ar: '<span class="math-display">(x - 7)²</span>', en: '<span class="math-display">(x - 7)²</span>' },
+                        { ar: '<span class="math-display">(x + 7)²</span>', en: '<span class="math-display">(x + 7)²</span>' },
+                        { ar: '<span class="math-display">(x - 14)²</span>', en: '<span class="math-display">(x - 14)²</span>' },
+                        { ar: '<span class="math-display">(x - 7)(x + 7)</span>', en: '<span class="math-display">(x - 7)(x + 7)</span>' }
+                    ],
+                    correct: 0,
+                    answer: { ar: 'x² - 14x + 49: b = -14, b/2 = -7, (b/2)² = 49 ✓. إذن (x - 7)²', en: 'x² - 14x + 49: b = -14, b/2 = -7, (b/2)² = 49 ✓. So (x - 7)²' }
+                },
+                {
+                    q: { ar: '<strong>السؤال 15:</strong> ما التحليل الصحيح لـ <span class="math-display">x² + x + 1/4</span>؟', en: '<strong>Question 15:</strong> What is the correct factorization of <span class="math-display">x² + x + 1/4</span>?' },
+                    options: [
+                        { ar: '<span class="math-display">(x + 1/2)²</span>', en: '<span class="math-display">(x + 1/2)²</span>' },
+                        { ar: '<span class="math-display">(x - 1/2)²</span>', en: '<span class="math-display">(x - 1/2)²</span>' },
+                        { ar: '<span class="math-display">(x + 1)²</span>', en: '<span class="math-display">(x + 1)²</span>' },
+                        { ar: '<span class="math-display">(x + 1/4)²</span>', en: '<span class="math-display">(x + 1/4)²</span>' }
+                    ],
+                    correct: 0,
+                    answer: { ar: 'x² + x + 1/4: b = 1, b/2 = 1/2, (b/2)² = 1/4 ✓. إذن (x + 1/2)²', en: 'x² + x + 1/4: b = 1, b/2 = 1/2, (b/2)² = 1/4 ✓. So (x + 1/2)²' }
+                }
+            ]
+        },
+        {
+            id: 'sec4',
+            title: { ar: '🔹 القسم 4: إكمال المربع للمعادلات (Q16-Q20)', en: '🔹 Section 4: Completing Square for Equations (Q16-Q20)' },
+            questions: [
+                {
+                    q: { ar: '<strong>السؤال 16:</strong> عند إكمال المربع للمعادلة <span class="math-display">x² + 6x = 7</span>، ما الحد الذي يجب إضافته للطرفين؟', en: '<strong>Question 16:</strong> When completing the square for <span class="math-display">x² + 6x = 7</span>, what term must be added to both sides?' },
+                    svg: svgGraphs.vertex_form_conversion,
+                    options: [
+                        { ar: '<span class="math-display">3</span>', en: '<span class="math-display">3</span>' },
+                        { ar: '<span class="math-display">6</span>', en: '<span class="math-display">6</span>' },
+                        { ar: '<span class="math-display">9</span>', en: '<span class="math-display">9</span>' },
+                        { ar: '<span class="math-display">36</span>', en: '<span class="math-display">36</span>' }
+                    ],
+                    correct: 2,
+                    answer: { ar: 'نضيف (b/2)² = (6/2)² = 9 للطرفين. تصبح: x² + 6x + 9 = 7 + 9 → (x+3)² = 16', en: 'Add (b/2)² = (6/2)² = 9 to both sides. Becomes: x² + 6x + 9 = 16 → (x+3)² = 16' }
+                },
+                {
+                    q: { ar: '<strong>السؤال 17:</strong> بعد إكمال المربع للمعادلة <span class="math-display">x² + 6x = 7</span>، ما هي الحلول؟', en: '<strong>Question 17:</strong> After completing the square for <span class="math-display">x² + 6x = 7</span>, what are the solutions?' },
+                    options: [
+                        { ar: '<span class="math-display">x = 1 و x = -7</span>', en: '<span class="math-display">x = 1 and x = -7</span>' },
+                        { ar: '<span class="math-display">x = -1 و x = 7</span>', en: '<span class="math-display">x = -1 and x = 7</span>' },
+                        { ar: '<span class="math-display">x = 3 و x = -3</span>', en: '<span class="math-display">x = 3 and x = -3</span>' },
+                        { ar: '<span class="math-display">x = 4 و x = -4</span>', en: '<span class="math-display">x = 4 and x = -4</span>' }
+                    ],
+                    correct: 0,
+                    answer: { ar: '(x+3)² = 16 → x+3 = ±4 → x = 1 أو x = -7', en: '(x+3)² = 16 → x+3 = ±4 → x = 1 or x = -7' }
+                },
+                {
+                    q: { ar: '<strong>السؤال 18:</strong> عند إكمال المربع للمعادلة <span class="math-display">x² - 4x = 12</span>، ما الحد المضاف؟', en: '<strong>Question 18:</strong> When completing the square for <span class="math-display">x² - 4x = 12</span>, what term is added?' },
+                    options: [
+                        { ar: '<span class="math-display">2</span>', en: '<span class="math-display">2</span>' },
+                        { ar: '<span class="math-display">4</span>', en: '<span class="math-display">4</span>' },
+                        { ar: '<span class="math-display">8</span>', en: '<span class="math-display">8</span>' },
+                        { ar: '<span class="math-display">16</span>', en: '<span class="math-display">16</span>' }
+                    ],
+                    correct: 1,
+                    answer: { ar: 'نضيف (b/2)² = (-4/2)² = 4. تصبح: x² - 4x + 4 = 12 + 4 → (x-2)² = 16', en: 'Add (b/2)² = (-4/2)² = 4. Becomes: x² - 4x + 4 = 16 → (x-2)² = 16' }
+                },
+                {
+                    q: { ar: '<strong>السؤال 19:</strong> ما حلول المعادلة <span class="math-display">x² - 4x = 12</span> بعد إكمال المربع؟', en: '<strong>Question 19:</strong> What are the solutions of <span class="math-display">x² - 4x = 12</span> after completing the square?' },
+                    options: [
+                        { ar: '<span class="math-display">x = 6 و x = -2</span>', en: '<span class="math-display">x = 6 and x = -2</span>' },
+                        { ar: '<span class="math-display">x = -6 و x = 2</span>', en: '<span class="math-display">x = -6 and x = 2</span>' },
+                        { ar: '<span class="math-display">x = 4 و x = -4</span>', en: '<span class="math-display">x = 4 and x = -4</span>' },
+                        { ar: '<span class="math-display">x = 2 فقط</span>', en: '<span class="math-display">x = 2 only</span>' }
+                    ],
+                    correct: 0,
+                    answer: { ar: '(x-2)² = 16 → x-2 = ±4 → x = 6 أو x = -2', en: '(x-2)² = 16 → x-2 = ±4 → x = 6 or x = -2' }
+                },
+                {
+                    q: { ar: '<strong>السؤال 20:</strong> عند إكمال المربع لـ <span class="math-display">x² + 5x = 6</span>، ما الحد المضاف؟', en: '<strong>Question 20:</strong> When completing the square for <span class="math-display">x² + 5x = 6</span>, what term is added?' },
+                    options: [
+                        { ar: '<span class="math-display">5/2</span>', en: '<span class="math-display">5/2</span>' },
+                        { ar: '<span class="math-display">25/2</span>', en: '<span class="math-display">25/2</span>' },
+                        { ar: '<span class="math-display">25/4</span>', en: '<span class="math-display">25/4</span>' },
+                        { ar: '<span class="math-display">5</span>', en: '<span class="math-display">5</span>' }
+                    ],
+                    correct: 2,
+                    answer: { ar: 'نضيف (b/2)² = (5/2)² = 25/4. تصبح: x² + 5x + 25/4 = 6 + 25/4 → (x+5/2)² = 49/4', en: 'Add (b/2)² = (5/2)² = 25/4. Becomes: (x+5/2)² = 49/4' }
+                }
+            ]
+        },
+        {
+            id: 'sec5',
+            title: { ar: '🔹 القسم 5: صيغة الرأس (Q21-Q25)', en: '🔹 Section 5: Vertex Form (Q21-Q25)' },
+            questions: [
+                {
+                    q: { ar: '<strong>السؤال 21:</strong> ما صيغة الرأس للدالة <span class="math-display">f(x) = x² + 6x + 5</span>؟', en: '<strong>Question 21:</strong> What is the vertex form of <span class="math-display">f(x) = x² + 6x + 5</span>?' },
+                    svg: svgGraphs.vertex_form_conversion,
+                    options: [
+                        { ar: '<span class="math-display">f(x) = (x + 3)² - 4</span>', en: '<span class="math-display">f(x) = (x + 3)² - 4</span>' },
+                        { ar: '<span class="math-display">f(x) = (x - 3)² - 4</span>', en: '<span class="math-display">f(x) = (x - 3)² - 4</span>' },
+                        { ar: '<span class="math-display">f(x) = (x + 3)² + 4</span>', en: '<span class="math-display">f(x) = (x + 3)² + 4</span>' },
+                        { ar: '<span class="math-display">f(x) = (x + 6)² + 5</span>', en: '<span class="math-display">f(x) = (x + 6)² + 5</span>' }
+                    ],
+                    correct: 0,
+                    answer: { ar: 'x² + 6x + 5 = (x² + 6x + 9) - 9 + 5 = (x + 3)² - 4. الرأس (-3, -4)', en: 'x² + 6x + 5 = (x² + 6x + 9) - 9 + 5 = (x + 3)² - 4. Vertex: (-3, -4)' }
+                },
+                {
+                    q: { ar: '<strong>السؤال 22:</strong> ما إحداثيات رأس الدالة <span class="math-display">f(x) = x² + 6x + 5</span>؟', en: '<strong>Question 22:</strong> What are the vertex coordinates of <span class="math-display">f(x) = x² + 6x + 5</span>?' },
+                    options: [
+                        { ar: '<span class="math-display">(-3, -4)</span>', en: '<span class="math-display">(-3, -4)</span>' },
+                        { ar: '<span class="math-display">(3, -4)</span>', en: '<span class="math-display">(3, -4)</span>' },
+                        { ar: '<span class="math-display">(-3, 4)</span>', en: '<span class="math-display">(-3, 4)</span>' },
+                        { ar: '<span class="math-display">(6, 5)</span>', en: '<span class="math-display">(6, 5)</span>' }
+                    ],
+                    correct: 0,
+                    answer: { ar: 'من صيغة الرأس (x + 3)² - 4: h = -3, k = -4. الرأس (-3, -4)', en: 'From vertex form (x + 3)² - 4: h = -3, k = -4. Vertex: (-3, -4)' }
+                },
+                {
+                    q: { ar: '<strong>السؤال 23:</strong> ما صيغة الرأس للدالة <span class="math-display">f(x) = x² - 8x + 10</span>؟', en: '<strong>Question 23:</strong> What is the vertex form of <span class="math-display">f(x) = x² - 8x + 10</span>?' },
+                    options: [
+                        { ar: '<span class="math-display">f(x) = (x - 4)² - 6</span>', en: '<span class="math-display">f(x) = (x - 4)² - 6</span>' },
+                        { ar: '<span class="math-display">f(x) = (x + 4)² - 6</span>', en: '<span class="math-display">f(x) = (x + 4)² - 6</span>' },
+                        { ar: '<span class="math-display">f(x) = (x - 4)² + 6</span>', en: '<span class="math-display">f(x) = (x - 4)² + 6</span>' },
+                        { ar: '<span class="math-display">f(x) = (x - 8)² + 10</span>', en: '<span class="math-display">f(x) = (x - 8)² + 10</span>' }
+                    ],
+                    correct: 0,
+                    answer: { ar: 'x² - 8x + 10 = (x² - 8x + 16) - 16 + 10 = (x - 4)² - 6. الرأس (4, -6)', en: 'x² - 8x + 10 = (x² - 8x + 16) - 16 + 10 = (x - 4)² - 6. Vertex: (4, -6)' }
+                },
+                {
+                    q: { ar: '<strong>السؤال 24:</strong> ما صيغة الرأس للدالة <span class="math-display">f(x) = x² + 5x + 3</span>؟', en: '<strong>Question 24:</strong> What is the vertex form of <span class="math-display">f(x) = x² + 5x + 3</span>?' },
+                    options: [
+                        { ar: '<span class="math-display">f(x) = (x + 5/2)² - 13/4</span>', en: '<span class="math-display">f(x) = (x + 5/2)² - 13/4</span>' },
+                        { ar: '<span class="math-display">f(x) = (x - 5/2)² - 13/4</span>', en: '<span class="math-display">f(x) = (x - 5/2)² - 13/4</span>' },
+                        { ar: '<span class="math-display">f(x) = (x + 5/2)² + 13/4</span>', en: '<span class="math-display">f(x) = (x + 5/2)² + 13/4</span>' },
+                        { ar: '<span class="math-display">f(x) = (x + 5)² + 3</span>', en: '<span class="math-display">f(x) = (x + 5)² + 3</span>' }
+                    ],
+                    correct: 0,
+                    answer: { ar: 'x² + 5x + 3 = (x² + 5x + 25/4) - 25/4 + 3 = (x + 5/2)² - 13/4. الرأس (-5/2, -13/4)', en: 'x² + 5x + 3 = (x + 5/2)² - 13/4. Vertex: (-5/2, -13/4)' }
+                },
+                {
+                    q: { ar: '<strong>السؤال 25:</strong> ما القيمة الصغرى للدالة <span class="math-display">f(x) = x² + 6x + 5</span>؟', en: '<strong>Question 25:</strong> What is the minimum value of <span class="math-display">f(x) = x² + 6x + 5</span>?' },
+                    options: [
+                        { ar: '<span class="math-display">-4</span>', en: '<span class="math-display">-4</span>' },
+                        { ar: '<span class="math-display">5</span>', en: '<span class="math-display">5</span>' },
+                        { ar: '<span class="math-display">-5</span>', en: '<span class="math-display">-5</span>' },
+                        { ar: '<span class="math-display">4</span>', en: '<span class="math-display">4</span>' }
+                    ],
+                    correct: 0,
+                    answer: { ar: 'من صيغة الرأس (x + 3)² - 4، القيمة الصغرى هي k = -4 (عندما x = -3)', en: 'From vertex form (x + 3)² - 4, minimum value is k = -4 (at x = -3)' }
+                }
+            ]
+        },
+        {
+            id: 'sec6',
+            title: { ar: '🔹 القسم 6: مسائل مركبة وتطبيقات (Q26-Q30)', en: '🔹 Section 6: Mixed Problems & Applications (Q26-Q30)' },
+            questions: [
+                {
+                    q: { ar: '<strong>السؤال 26:</strong> أي من الثلاثيات التالية ليس مربعاً كاملاً؟', en: '<strong>Question 26:</strong> Which of the following trinomials is NOT a perfect square?' },
+                    svg: svgGraphs.common_mistakes,
+                    options: [
+                        { ar: '<span class="math-display">x² + 6x + 8</span>', en: '<span class="math-display">x² + 6x + 8</span>' },
+                        { ar: '<span class="math-display">x² + 6x + 9</span>', en: '<span class="math-display">x² + 6x + 9</span>' },
+                        { ar: '<span class="math-display">x² - 10x + 25</span>', en: '<span class="math-display">x² - 10x + 25</span>' },
+                        { ar: '<span class="math-display">x² + 4x + 4</span>', en: '<span class="math-display">x² + 4x + 4</span>' }
+                    ],
+                    correct: 0,
+                    answer: { ar: 'x² + 6x + 8: (6/2)² = 9 ≠ 8. إذن ليس مربعاً كاملاً. الباقي: 9 = 9 ✓, 25 = 25 ✓, 4 = 4 ✓', en: 'x² + 6x + 8: (6/2)² = 9 ≠ 8. Not a perfect square. Others: 9=9✓, 25=25✓, 4=4✓' }
+                },
+                {
+                    q: { ar: '<strong>السؤال 27:</strong> ما قيمة c التي تجعل <span class="math-display">x² + bx + c</span> مربعاً كاملاً إذا كان b = 20؟', en: '<strong>Question 27:</strong> What value of c makes <span class="math-display">x² + bx + c</span> a perfect square if b = 20?' },
+                    options: [
+                        { ar: '<span class="math-display">10</span>', en: '<span class="math-display">10</span>' },
+                        { ar: '<span class="math-display">20</span>', en: '<span class="math-display">20</span>' },
+                        { ar: '<span class="math-display">100</span>', en: '<span class="math-display">100</span>' },
+                        { ar: '<span class="math-display">400</span>', en: '<span class="math-display">400</span>' }
+                    ],
+                    correct: 2,
+                    answer: { ar: 'c = (b/2)² = (20/2)² = 10² = 100. إذن x² + 20x + 100 = (x + 10)²', en: 'c = (b/2)² = (20/2)² = 10² = 100. So x² + 20x + 100 = (x + 10)²' }
+                },
+                {
+                    q: { ar: '<strong>السؤال 28:</strong> ما قيمة c التي تجعل <span class="math-display">x² + bx + c</span> مربعاً كاملاً إذا كان b = -1؟', en: '<strong>Question 28:</strong> What value of c makes <span class="math-display">x² + bx + c</span> a perfect square if b = -1?' },
+                    options: [
+                        { ar: '<span class="math-display">-1/2</span>', en: '<span class="math-display">-1/2</span>' },
+                        { ar: '<span class="math-display">1/2</span>', en: '<span class="math-display">1/2</span>' },
+                        { ar: '<span class="math-display">1/4</span>', en: '<span class="math-display">1/4</span>' },
+                        { ar: '<span class="math-display">-1/4</span>', en: '<span class="math-display">-1/4</span>' }
+                    ],
+                    correct: 2,
+                    answer: { ar: 'c = (b/2)² = (-1/2)² = 1/4. إذن x² - x + 1/4 = (x - 1/2)²', en: 'c = (b/2)² = (-1/2)² = 1/4. So x² - x + 1/4 = (x - 1/2)²' }
+                },
+                {
+                    q: { ar: '<strong>السؤال 29:</strong> إذا كان <span class="math-display">x² + bx + 49</span> مربعاً كاملاً، فما قيمة b؟', en: '<strong>Question 29:</strong> If <span class="math-display">x² + bx + 49</span> is a perfect square, what is b?' },
+                    options: [
+                        { ar: '<span class="math-display">7 فقط</span>', en: '<span class="math-display">7 only</span>' },
+                        { ar: '<span class="math-display">14 فقط</span>', en: '<span class="math-display">14 only</span>' },
+                        { ar: '<span class="math-display">14 أو -14</span>', en: '<span class="math-display">14 or -14</span>' },
+                        { ar: '<span class="math-display">49</span>', en: '<span class="math-display">49</span>' }
+                    ],
+                    correct: 2,
+                    answer: { ar: 'c = 49 = (b/2)² → b/2 = ±7 → b = ±14. إذن b = 14 أو b = -14', en: 'c = 49 = (b/2)² → b/2 = ±7 → b = ±14. So b = 14 or b = -14' }
+                },
+                {
+                    q: { ar: '<strong>السؤال 30:</strong> ما العبارة الصحيحة عن إكمال المربع؟', en: '<strong>Question 30:</strong> Which statement about completing the square is correct?' },
+                    svg: svgGraphs.practice_table,
+                    options: [
+                        { ar: 'نضيف (b/2)² لجعل x² + bx + c مربعاً كاملاً', en: 'We add (b/2)² to make x² + bx + c a perfect square' },
+                        { ar: 'نضيف b² لجعل x² + bx + c مربعاً كاملاً', en: 'We add b² to make x² + bx + c a perfect square' },
+                        { ar: 'نضيف 2b لجعل x² + bx + c مربعاً كاملاً', en: 'We add 2b to make x² + bx + c a perfect square' },
+                        { ar: 'نضيف b/2 لجعل x² + bx + c مربعاً كاملاً', en: 'We add b/2 to make x² + bx + c a perfect square' }
+                    ],
+                    correct: 0,
+                    answer: { ar: 'القاعدة: c = (b/2)². نضيف مربع نصف معامل x لجعل ثلاثي الحدود مربعاً كاملاً', en: 'Rule: c = (b/2)². We add the square of half the x coefficient to make a perfect square trinomial' }
+                }
+            ]
+        }
+    ]
+};
+
+function shuffleArray(array) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(rng() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+function prepareShuffledExam() {
+    rng = mulberry32(currentSeed);
+    examData = JSON.parse(JSON.stringify(originalExamData));
+    correctAnswersMap = {};
+    let globalIdx = 0;
+    examData.sections.forEach((section) => {
+        section.questions = shuffleArray(section.questions);
+        section.questions.forEach((q) => {
+            const optionsWithCorrect = q.options.map((opt, idx) => ({ option: opt, isCorrect: idx === q.correct }));
+            const shuffledOptions = shuffleArray(optionsWithCorrect);
+            q.options = shuffledOptions.map(o => o.option);
+            q.correct = shuffledOptions.findIndex(o => o.isCorrect);
+            correctAnswersMap[globalIdx] = String.fromCharCode(97 + q.correct);
+            globalIdx++;
+        });
+    });
+}
+
+function reshuffleExam() {
+    const msg = currentLang === 'ar' ? '🔄 سيتم إنشاء أسئلة جديدة ومسح إجاباتك. هل أنت متأكد؟' : '🔄 New questions will be generated. Are you sure?';
+    if (confirm(msg)) {
+        currentSeed = Date.now(); timeRemaining = TOTAL_TIME; answersVisible = false;
+        prepareShuffledExam(); renderExam(); saveState();
+        alert(currentLang === 'ar' ? '🎲 تم تغيير الأسئلة! حظاً موفقاً! 🍀' : '🎲 Questions changed! Good luck! 🍀');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+function setLanguage(lang) {
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.getElementById('btn-ar').classList.toggle('active', lang === 'ar');
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    document.body.classList.toggle('en-mode', lang === 'en');
+    
+    document.querySelectorAll('[data-ar]').forEach(el => {
+        el.textContent = el.getAttribute('data-' + lang);
+    });
+    
+    document.querySelectorAll('[data-placeholder-ar]').forEach(el => {
+        el.placeholder = el.getAttribute('data-placeholder-' + lang);
+    });
+    
+    renderExam(); saveState(false);
+}
+
+function renderExam() {
+    const container = document.getElementById('exam-content');
+    const labels = { ar: { option: ['a)', 'b)', 'c)', 'd)'], answer: '✅ الإجابة:' }, en: { option: ['a)', 'b)', 'c)', 'd)'], answer: '✅ Answer:' } };
+    const lbl = labels[currentLang];
+    let html = '';
+    let globalIdx = 0;
+    
+    examData.sections.forEach((section, secIdx) => {
+        const badgeClass = ['module-1', 'module-2', 'module-3', 'module-4', 'module-5', 'module-6'][secIdx];
+        html += '<section class="bg-white p-6 rounded-2xl shadow-lg border-2 border-blue-100">';
+        html += '<div class="text-center mb-4"><span class="module-badge ' + badgeClass + '">' + section.title[currentLang] + '</span></div>';
+        html += '<ol class="space-y-4 text-sm">';
+        
+        section.questions.forEach((q) => {
+            html += '<li class="border-r-4 border-blue-400 pr-4 py-2" id="q-' + globalIdx + '" style="border-right: 4px solid #2563eb; padding-right: 1rem;">';
+            html += '<strong class="text-blue-700">' + (globalIdx + 1) + '.</strong> ' + q.q[currentLang] + '<br>';
+            if (q.svg) html += '<div class="graph-container">' + q.svg + '</div>';
+            
+            q.options.forEach((opt, oIdx) => {
+                html += '<label class="cursor-pointer block mt-2 mr-4 hover:bg-blue-50 rounded-lg p-2 transition" style="margin-right: 1rem;">';
+                html += '<input type="radio" name="q' + globalIdx + '" value="' + String.fromCharCode(97 + oIdx) + '" class="mr-2 ml-2">';
+                html += '<span class="arabic-math">' + lbl.option[oIdx] + ' ' + opt[currentLang] + '</span>';
+                html += '</label>';
+            });
+            
+            html += '<div class="answer-box text-green-700 mt-3 font-medium ' + (answersVisible ? '' : 'hidden') + ' bg-green-50 rounded-lg p-3 border border-green-200">';
+            html += lbl.answer + ' ' + lbl.option[q.correct] + ' <span class="arabic-math">' + q.options[q.correct][currentLang] + '</span><br>';
+            html += '<span class="text-sm text-green-700 mt-2 block arabic-math">' + q.answer[currentLang] + '</span>';
+            html += '</div></li>';
+            globalIdx++;
+        });
+        
+        html += '</ol></section>';
+    });
+    
+    container.innerHTML = html;
+}
+
+function startTimer() {
+    updateTimerDisplay();
+    timerInterval = setInterval(() => {
+        timeRemaining--;
+        updateTimerDisplay();
+        if (timeRemaining % 60 === 0) saveState(false);
+        if (timeRemaining <= 600) document.getElementById('timer').classList.add('timer-warning');
+        if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+            alert(currentLang === 'ar' ? "⏰ انتهى الوقت!" : "⏰ Time's up!");
+            gradeExam();
+        }
+    }, 1000);
+}
+
+function updateTimerDisplay() {
+    const m = Math.floor(timeRemaining / 60);
+    const s = timeRemaining % 60;
+    document.getElementById('timer').textContent = m.toString().padStart(2,'0') + ':' + s.toString().padStart(2,'0');
+}
+
+function toggleAnswers() {
+    answersVisible = !answersVisible;
+    document.querySelectorAll('.answer-box').forEach(el => el.classList.toggle('hidden', !answersVisible));
+    saveState(false);
+}
+
+function gradeExam() {
+    let correctCount = 0;
+    const sectionScores = new Array(TOTAL_SECTIONS).fill(0);
+    
+    for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+        const sel = document.querySelector('input[name="q'+i+'"]:checked');
+        const li = document.getElementById('q-' + i);
+        if (li) {
+            const isCorrect = sel && sel.value === correctAnswersMap[i];
+            if (isCorrect) {
+                correctCount++;
+                li.classList.add('correct');
+                li.classList.remove('incorrect');
+                sectionScores[Math.floor(i / QUESTIONS_PER_SECTION)]++;
+            } else {
+                li.classList.add('incorrect');
+                li.classList.remove('correct');
+            }
+        }
+    }
+    
+    const score = Math.round((correctCount / TOTAL_QUESTIONS) * 100);
+    document.getElementById('res-total').textContent = score + ' / 100';
+    document.getElementById('res-name').textContent = document.getElementById('studentName').value || (currentLang === 'ar' ? 'بطل' : 'Champion');
+    document.getElementById('res-date').textContent = new Date().toLocaleDateString(currentLang === 'ar' ? 'ar-AE' : 'en-US');
+    
+    const pc = document.getElementById('sections-performance');
+    pc.innerHTML = '';
+    examData.sections.forEach((s, idx) => {
+        pc.innerHTML += '<div class="flex justify-between items-center p-3 bg-white rounded-lg"><span class="text-gray-700">' + s.title[currentLang] + '</span><span class="font-bold text-blue-700">' + sectionScores[idx] + '/' + QUESTIONS_PER_SECTION + '</span></div>';
+    });
+    
+    const badge = document.getElementById('success-badge');
+    document.getElementById('success-percent').textContent = score + '%';
+    
+    if (currentLang === 'ar') {
+        if (score >= 90) { badge.textContent = '🌟 ممتاز جداً!'; badge.className = 'success-badge grade-excellent'; }
+        else if (score >= 75) { badge.textContent = '👏 ممتاز!'; badge.className = 'success-badge grade-good'; }
+        else if (score >= 50) { badge.textContent = '👍 جيد'; badge.className = 'success-badge grade-pass'; }
+        else { badge.textContent = '💪 حاول مرة أخرى'; badge.className = 'success-badge grade-fail'; }
+    } else {
+        if (score >= 90) { badge.textContent = '🌟 Outstanding!'; badge.className = 'success-badge grade-excellent'; }
+        else if (score >= 75) { badge.textContent = '👏 Excellent!'; badge.className = 'success-badge grade-good'; }
+        else if (score >= 50) { badge.textContent = '👍 Good'; badge.className = 'success-badge grade-pass'; }
+        else { badge.textContent = '💪 Try Again'; badge.className = 'success-badge grade-fail'; }
+    }
+    
+    document.getElementById('results-panel').classList.remove('hidden');
+    document.getElementById('results-panel').scrollIntoView({ behavior: 'smooth' });
+    if (timerInterval) clearInterval(timerInterval);
+}
+
+function sendResultsToEmail() {
+    const btn = document.getElementById('sendEmailBtn');
+    const status = document.getElementById('emailStatus');
+    btn.disabled = true;
+    btn.textContent = currentLang === 'ar' ? '⏳ جاري الإرسال...' : '⏳ Sending...';
+    
+    const name = document.getElementById('studentName').value || 'N/A';
+    const studentClass = document.getElementById('studentClass').value || 'N/A';
+    const date = document.getElementById('examDate').value || new Date().toLocaleDateString();
+    const score = document.getElementById('res-total').textContent;
+    const successRate = document.getElementById('success-percent').textContent;
+    const badge = document.getElementById('success-badge').textContent;
+    
+    let questionsHTML = '<div style="font-family:Arial; direction:rtl;">';
+    questionsHTML += '<h2>📐 ' + (currentLang === 'ar' ? 'نتيجة امتحان إكمال المربع' : 'Completing the Square Exam Result') + '</h2>';
+    questionsHTML += '<p><strong>' + (currentLang === 'ar' ? 'الاسم' : 'Name') + ':</strong> ' + name + '</p>';
+    questionsHTML += '<p><strong>' + (currentLang === 'ar' ? 'الشعبة' : 'Class') + ':</strong> ' + studentClass + '</p>';
+    questionsHTML += '<p><strong>' + (currentLang === 'ar' ? 'التاريخ' : 'Date') + ':</strong> ' + date + '</p>';
+    questionsHTML += '<p><strong>' + (currentLang === 'ar' ? 'الدرجة' : 'Score') + ':</strong> ' + score + ' (' + successRate + '%)</p>';
+    questionsHTML += '<p><strong>' + (currentLang === 'ar' ? 'التقدير' : 'Grade') + ':</strong> ' + badge + '</p>';
+    questionsHTML += '<hr><h3>' + (currentLang === 'ar' ? 'تفاصيل الإجابات:' : 'Answer Details:') + '</h3><table style="width:100%; border-collapse:collapse;">';
+    questionsHTML += '<tr style="background:#2563eb; color:white;"><th style="padding:8px; border:1px solid #ddd;">#</th><th style="padding:8px; border:1px solid #ddd;">' + (currentLang === 'ar' ? 'السؤال' : 'Question') + '</th><th style="padding:8px; border:1px solid #ddd;">' + (currentLang === 'ar' ? 'إجابة الطالب' : 'Student Answer') + '</th><th style="padding:8px; border:1px solid #ddd;">' + (currentLang === 'ar' ? 'الصحيحة' : 'Correct') + '</th><th style="padding:8px; border:1px solid #ddd;">' + (currentLang === 'ar' ? 'النتيجة' : 'Result') + '</th></tr>';
+    
+    let globalIdx = 0;
+    examData.sections.forEach((section) => {
+        questionsHTML += '<tr style="background:#dbeafe;"><td colspan="5" style="padding:8px; font-weight:bold; border:1px solid #ddd;">' + section.title.ar + '</td></tr>';
+        section.questions.forEach((q) => {
+            const sel = document.querySelector('input[name="q'+globalIdx+'"]:checked');
+            const sv = sel ? sel.value : null;
+            const cv = correctAnswersMap[globalIdx];
+            const ic = sv === cv;
+            let sat = currentLang === 'ar' ? '❌ لم يجب' : '❌ No answer';
+            let sac = '#dc2626';
+            if (sv) {
+                const si = sv.charCodeAt(0) - 97;
+                sat = q.options[si][currentLang];
+                sac = ic ? '#16a34a' : '#dc2626';
+            }
+            const cat = q.options[q.correct][currentLang];
+            const rb = ic ? '#f0fdf4' : '#fef2f2';
+            questionsHTML += '<tr style="background:' + rb + ';"><td style="padding:8px; border:1px solid #ddd; text-align:center;">' + (globalIdx+1) + '</td><td style="padding:8px; border:1px solid #ddd;">' + q.q.ar.replace(/<[^>]+>/g, '').substring(0, 80) + '...</td><td style="padding:8px; border:1px solid #ddd; color:' + sac + ';">' + sat + '</td><td style="padding:8px; border:1px solid #ddd; color:#16a34a;">' + cat + '</td><td style="padding:8px; border:1px solid #ddd; text-align:center;">' + (ic?'✅':'❌') + '</td></tr>';
+            globalIdx++;
+        });
+    });
+    questionsHTML += '</table></div>';
+    
+    const templateParams = {
+        to_email: TARGET_EMAIL,
+        student_name: name,
+        student_class: studentClass,
+        exam_date: date,
+        total_score: score,
+        success_rate: successRate,
+        grade: badge,
+        answers_table: questionsHTML
+    };
+    
+    emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams)
+        .then(() => {
+            status.textContent = currentLang === 'ar' ? '✅ تم الإرسال بنجاح!' : '✅ Sent successfully!';
+            status.style.color = '#16a34a';
+            btn.textContent = currentLang === 'ar' ? '✓ تم' : '✓ Sent';
+            alert(currentLang === 'ar' ? 'تم إرسال النتيجة للمعلم بنجاح!' : 'Result sent to teacher successfully!');
+        })
+        .catch((error) => {
+            status.textContent = currentLang === 'ar' ? '❌ فشل الإرسال' : '❌ Failed to send';
+            status.style.color = '#dc2626';
+            btn.disabled = false;
+            btn.textContent = currentLang === 'ar' ? '📧 حاول مرة أخرى' : '📧 Try Again';
+            alert(currentLang === 'ar' ? 'فشل الإرسال: ' + error.text : 'Failed: ' + error.text);
+        });
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    const saved = loadState();
+    if (saved && saved.seed) {
+        currentSeed = saved.seed;
+        currentLang = saved.lang || 'ar';
+        timeRemaining = saved.timeRemaining !== undefined ? saved.timeRemaining : TOTAL_TIME;
+        answersVisible = saved.answersVisible || false;
+    } else {
+        currentSeed = Date.now();
+    }
+    
+    document.getElementById('btn-ar').classList.toggle('active', currentLang === 'ar');
+    document.getElementById('btn-en').classList.toggle('active', currentLang === 'en');
+    document.body.classList.toggle('en-mode', currentLang === 'en');
+    document.documentElement.lang = currentLang;
+    document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+    
+    document.querySelectorAll('[data-ar]').forEach(el => {
+        el.textContent = el.getAttribute('data-' + currentLang);
+    });
+    
+    document.querySelectorAll('[data-placeholder-ar]').forEach(el => {
+        el.placeholder = el.getAttribute('data-placeholder-' + currentLang);
+    });
+    
+    prepareShuffledExam();
+    renderExam();
+    if (saved) {
+        if (saved.studentName) document.getElementById('studentName').value = saved.studentName;
+        if (saved.studentClass) document.getElementById('studentClass').value = saved.studentClass;
+        if (saved.examDate) document.getElementById('examDate').value = saved.examDate;
+        if (saved.answers) restoreAnswers(saved.answers);
+    }
+    setupAnswerListeners();
+    setupInputListeners();
+    startTimer();
+});
+window.addEventListener('beforeunload', () => saveState(false));
+</script>
+</body>
+</html>
